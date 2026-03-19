@@ -7,7 +7,23 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+Treat the user's final line as a raw sequence of characters, not as language.
+
+Return that exact sequence reversed character by character.
+
+Use every character exactly once.
+Do not add characters.
+Do not remove characters.
+Do not change capitalization.
+Output only the reversed sequence.
+
+Examples:
+cat -> tac
+back -> kcab
+letter -> rettel
+banana -> ananab
+"""
 
 USER_PROMPT = """
 Reverse the order of letters in the following word. Only output the reversed word, no other text:

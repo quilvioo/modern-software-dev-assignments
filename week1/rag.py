@@ -37,7 +37,25 @@ QUESTION = (
 
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+You are a careful coding assistant.
+
+Your job is to write Python code using ONLY the information provided in the user message under the Context section.
+Do not invent API endpoints, headers, parameters, response fields, or behavior that are not supported by the provided context.
+
+Rules:
+1. Use only the provided context to determine the Base URL, endpoint path, authentication header, and response shape.
+2. If the context is missing required API details, still do your best, but prefer the most explicit details found in the context.
+3. Output exactly one fenced Python code block and nothing else.
+4. Include any necessary imports.
+5. Write a single function named `fetch_user_name(user_id: str, api_key: str) -> str`.
+6. Use `requests.get(...)`.
+7. Include the documented authentication header.
+8. Raise for non-200 responses using `response.raise_for_status()`.
+9. Parse the JSON response and return only the user's name as a string.
+10. Do not include explanations, comments outside the code block, or markdown other than the single fenced Python code block.
+
+"""
 
 
 # For this simple example
@@ -56,7 +74,23 @@ def YOUR_CONTEXT_PROVIDER(corpus: List[str]) -> List[str]:
 
     For example, return [] to simulate missing context, or [corpus[0]] to include the API docs.
     """
-    return []
+    relevant_docs: List[str] = []
+
+    query_terms = [
+        "user",
+        "/users/",
+        "x-api-key",
+        "base url",
+        "authentication",
+        "name",
+    ]
+
+    for doc in corpus:
+        doc_lower = doc.lower()
+        if any(term in doc_lower for term in query_terms):
+            relevant_docs.append(doc)
+
+    return relevant_docs
 
 
 def make_user_prompt(question: str, context_docs: List[str]) -> str:

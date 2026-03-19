@@ -8,7 +8,27 @@ load_dotenv()
 NUM_RUNS_TIMES = 5
 
 # TODO: Fill this in!
-YOUR_SYSTEM_PROMPT = ""
+YOUR_SYSTEM_PROMPT = """
+Reason through the user's problem step by step, showing your reasoning process.
+
+Here are some examples of how to reason through problems:
+<example>
+Write a function to reverse a string.
+Steps: First, I will define a function that takes a string as input. Then, I will reverse the string by slicing it with a step of -1. Finally, I will return the reversed string.
+</example>
+
+<example>
+Prove the square root of 2 is irrational.
+Steps: Assume for the sake of contradiction that sqrt(2) is rational.
+Then we can express it as a fraction a/b in lowest terms, where a and b are integers with no common factors.
+Squaring both sides gives 2 = a^2 / b^2, which implies a^2 = 2 * b^2.
+This means a^2 is even, so a must be even. Let a = 2k for some integer k.
+Substituting back gives (2k)^2 = 2 * b^2, which simplifies to 4k^2 = 2 * b^2, and further to 2k^2 = b^2.
+This means b^2 is even, so b must also be even.
+However, this contradicts our initial assumption that a/b is in lowest terms, since both a and b are even and thus have a common factor of 2.
+Therefore, our assumption that sqrt(2) is rational must be false, and we conclude that sqrt(2) is irrational.
+</example>
+"""
 
 
 USER_PROMPT = """
