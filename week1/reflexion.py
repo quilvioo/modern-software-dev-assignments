@@ -15,7 +15,30 @@ Keep the implementation minimal.
 """
 
 # TODO: Fill this in!
-YOUR_REFLEXION_PROMPT = ""
+YOUR_REFLEXION_PROMPT = YOUR_REFLEXION_PROMPT = """
+You are revising a Python function based on test failures.
+
+Your job:
+1. Read the previous implementation.
+2. Read the failing test results carefully.
+3. Infer which rules are missing or implemented incorrectly.
+4. Produce a corrected implementation with the smallest necessary changes.
+5. Preserve behavior that already appears correct.
+6. Do not invent new requirements beyond what is supported by the failures and task description.
+
+Important constraints:
+- Output ONLY a single fenced Python code block.
+- The code block must define: is_valid_password(password: str) -> bool
+- Do not include prose outside the code block.
+- Keep the implementation minimal.
+- Ensure valid Python syntax.
+
+When revising:
+- Use the failure messages as the primary debugging signal.
+- Do not over-correct by adding restrictions not supported by the task.
+- If a test indicates a missing requirement, implement that requirement directly.
+- Before finalizing, check whether your updated code would pass all listed failing cases without breaking the passing behavior.
+"""
 
 
 # Ground-truth test suite used to evaluate generated code
@@ -96,7 +119,29 @@ def your_build_reflexion_context(prev_code: str, failures: List[str]) -> str:
 
     Return a string that will be sent as the user content alongside the reflexion system prompt.
     """
-    return ""
+    failure_text = "\n".join(f"- {f}" for f in failures)
+
+    return f"""
+    Task:
+    Write a Python function `is_valid_password(password: str) -> bool`.
+
+    Known password requirements from the evaluator:
+    - at least 8 characters
+    - at least one lowercase letter
+    - at least one uppercase letter
+    - at least one digit
+    - at least one special character from: !@#$%^&*()-_
+    - no whitespace
+
+    Previous implementation:
+    ```python
+    {prev_code}
+    Failing test results:
+    {failure_text}
+    Revise the function so it fixes these failures while keeping the implementation minimal.
+    Preserve behavior that already seems correct.
+    Output only the updated Python code block.
+    """.strip()
 
 
 def apply_reflexion(
